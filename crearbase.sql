@@ -22,7 +22,7 @@ INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria) VALUES
 ('Producto 4', 'Descripción del producto 4', 60, 8.90, 'Categoría C'),
 ('Producto 5', 'Descripción del producto 5', 10, 12.30, 'Categoría B');
 
--- Generar productos masivos para pruebas
+-- Generar productos masivos para pruebas (gracias Coderhouse)
 DELIMITER $$
 CREATE PROCEDURE generar_productos_masivos()
 BEGIN
