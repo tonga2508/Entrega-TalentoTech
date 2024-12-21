@@ -1,9 +1,14 @@
 import mysql.connector
 from mysql.connector import Error
 from colorama import init, Fore
+import os
 
 # Inicializar colorama
 init()
+
+def limpiar_pantalla():
+    """Limpia la pantalla para mejorar la visualización en la terminal."""
+    os.system("cls" if os.name == "nt" else "clear")
 
 def crear_conexion():
     """Crear y devolver una conexión a la base de datos MySQL."""
@@ -22,11 +27,16 @@ def crear_conexion():
 
 def registrar_producto():
     """Registrar un nuevo producto en la base de datos."""
+    limpiar_pantalla()
     nombre = input("Ingrese el nombre del producto: ")
     descripcion = input("Ingrese la descripción del producto: ")
     cantidad = int(input("Ingrese la cantidad disponible: "))
     precio = float(input("Ingrese el precio del producto: "))
     categoria = input("Ingrese la categoría del producto: ")
+
+    if cantidad <= 0 or precio <= 0:
+        print(Fore.RED + "La cantidad y el precio deben ser mayores a 0." + Fore.RESET)
+        return
 
     conexion = crear_conexion()
     if conexion:
@@ -40,7 +50,8 @@ def registrar_producto():
         print(Fore.GREEN + "Producto registrado exitosamente." + Fore.RESET)
 
 def mostrar_productos():
-
+    """Mostrar productos del inventario por categoría o todos."""
+    limpiar_pantalla()
     print(Fore.CYAN + "\nOpciones para mostrar productos:" + Fore.RESET)
     print("1. Mostrar todos los productos")
     print("2. Mostrar productos por categoría")
@@ -55,7 +66,7 @@ def mostrar_productos():
             print(Fore.YELLOW + "\nTodos los productos:" + Fore.RESET)
         elif opcion == "2":
             categoria = input("Ingrese la categoría (A, B, C, etc.): ").upper()
-            cursor.execute("SELECT * FROM productos WHERE categoria = %s", (categoria,))
+            cursor.execute("SELECT * FROM productos WHERE categoria LIKE %s", (f"%{categoria}%",))
             productos = cursor.fetchall()
             print(Fore.YELLOW + f"\nProductos en la categoría '{categoria}':" + Fore.RESET)
         else:
@@ -75,8 +86,13 @@ def mostrar_productos():
 
 def actualizar_producto():
     """Actualizar la cantidad de un producto específico."""
+    limpiar_pantalla()
     id_producto = int(input("Ingrese el ID del producto a actualizar: "))
     nueva_cantidad = int(input("Ingrese la nueva cantidad: "))
+
+    if nueva_cantidad <= 0:
+        print(Fore.RED + "La cantidad debe ser mayor a 0." + Fore.RESET)
+        return
 
     conexion = crear_conexion()
     if conexion:
@@ -92,6 +108,7 @@ def actualizar_producto():
 
 def eliminar_producto():
     """Eliminar un producto del inventario."""
+    limpiar_pantalla()
     id_producto = int(input("Ingrese el ID del producto a eliminar: "))
 
     conexion = crear_conexion()
@@ -107,6 +124,7 @@ def eliminar_producto():
 
 def buscar_producto():
     """Buscar un producto por ID, nombre o categoría."""
+    limpiar_pantalla()
     criterio = input("Buscar por (id/nombre/categoria): ").lower()
     valor = input("Ingrese el valor de búsqueda: ")
 
@@ -135,6 +153,7 @@ def buscar_producto():
 
 def reporte_bajo_stock():
     """Generar un reporte de productos con bajo stock."""
+    limpiar_pantalla()
     limite = int(input("Ingrese el límite de stock: "))
 
     conexion = crear_conexion()
@@ -151,6 +170,7 @@ def reporte_bajo_stock():
 def menu():
     """Mostrar el menú principal e interactuar con el usuario."""
     while True:
+        limpiar_pantalla()
         print(Fore.CYAN + "\nMenú Principal" + Fore.RESET)
         print("1. Registrar producto")
         print("2. Mostrar productos")
